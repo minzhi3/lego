@@ -75,11 +75,33 @@ class LegoFactory:
         sketch = sketch.circle(
             self.inner_cylinder_radius - self.inner_cylinder_thickness, "s"
         )
+
+        if height > 1:
+            cylinder_ledge: cq.Sketch = cq.Workplane(
+                "XY", (0, 0, base_thickness)
+            ).sketch()
+            cylinder_ledge = cylinder_ledge.rarray(
+                self.stud_spacing, self.stud_spacing, height - 1, width - 1
+            )
+            cylinder_ledge = cylinder_ledge.rect(base_height, self.ledge_thickness)
+            cylinder_ledge = cylinder_ledge.rect(
+                self.ledge_thickness,
+                (self.stud_spacing - self.wall - self.base_shrink) * 2,
+            )
+            cylinder_ledge = cylinder_ledge.circle(
+                self.inner_cylinder_radius, "s"
+            ).finalize()
+            cylinder_ledge = cylinder_ledge.extrude(
+                -base_thickness + self.unit_thickness
+            ).tag("cylinder_ledge")
+
         base: cq.Workplane = sketch.finalize()
         base = base.extrude(base_thickness).tag("base")
 
         base = base.faces(">Z").workplane(offset=-self.wall)
         base = base.box(base_height, base_width, self.wall, [True, True, False])
+
+        base = base.add(cylinder_ledge).combine()
 
         stun = self.stud(base_thickness, height, width)
         ledge = self.ledge(base_height, base_width, base_thickness, height, width)
