@@ -1,3 +1,6 @@
 *.stl
 *.step
 /output
+.vscode
+.python-version
+/__pycache__
