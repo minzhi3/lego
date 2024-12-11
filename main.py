@@ -3,6 +3,6 @@ import ocp_vscode
 
 
 factory = LegoFactory()
-result = factory.make_rectangle(2, 4, 4)
+result = factory.make_slope(2, 4, 2, 4, "sine")
 
-ocp_vscode.show_object(result, clear=True)
+ocp_vscode.show(result)
